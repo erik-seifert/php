@@ -25,6 +25,7 @@ RUN apt-get install -qq -y \
     && docker-php-ext-install bcmath opcache
 
 RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/* \
 
 # get from https://github.com/docker-library/drupal/blob/master/8.1/apache/Dockerfile
 # see https://secure.php.net/manual/en/opcache.installation.php
