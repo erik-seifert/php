@@ -7,22 +7,25 @@ RUN apt-get install -qq -y \
         libjpeg62-turbo-dev \
         libmcrypt-dev \
         curl \
-        redis-server \
         libz-dev \
         libpq-dev \
         mysql-client \
         supervisor \
         libpng12-dev \
+        openssl \
+        libssl-dev \
         git \
-        sudo \
-    && docker-php-ext-install -j$(nproc) iconv \
-    && docker-php-ext-install -j$(nproc) mcrypt \
-    && docker-php-ext-install -j$(nproc) pdo_mysql \
-    && docker-php-ext-install -j$(nproc) pdo_pgsql \
-    && docker-php-ext-install -j$(nproc) zip \
-    && docker-php-ext-configure gd --with-png-dir=/usr --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install bcmath opcache
+        sudo
+
+RUN docker-php-ext-install -j$(nproc) iconv
+RUN docker-php-ext-install -j$(nproc) mcrypt
+RUN docker-php-ext-install -j$(nproc) pdo_mysql
+RUN docker-php-ext-install -j$(nproc) pdo_pgsql
+RUN docker-php-ext-install -j$(nproc) zip
+# RUN docker-php-ext-install -j$(nproc) openssl
+RUN docker-php-ext-configure gd --with-png-dir=/usr --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+RUN docker-php-ext-install -j$(nproc) gd
+RUN docker-php-ext-install bcmath opcache
 
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* \
@@ -37,6 +40,8 @@ RUN { \
 		echo 'opcache.fast_shutdown=1'; \
 		echo 'opcache.enable_cli=1'; \
 } > /usr/local/etc/php/conf.d/opcache-recommended.ini
+
+ADD php.ini /etc/php.ini
 
 RUN curl -sS https://getcomposer.org/installer | php
 RUN mv composer.phar /usr/local/bin/composer
