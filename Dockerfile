@@ -40,7 +40,8 @@ RUN docker-php-ext-install bcmath opcache
 
 # Install memcache
 RUN pecl install redis \
-    && docker-php-ext-enable redis
+    && docker-php-ext-enable redis &&
+    echo "extension=redis.so" > /usr/local/etc/php/conf.d/docker-php-ext-redis.ini
 
 RUN curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/php7.tar.gz" \
     && mkdir -p /usr/src/php/ext/memcached \
